@@ -5,32 +5,19 @@ class PostService {
 
   findAllPost = async () => {
     const allPost = await this.postRepository.findAllPost();
-    allPost.sort((prev, next) => {
-      return next.createdAt - prev.createdAt;
-    });
-    const list = allPost.map((post) => {
-      return {
-        nickname: post.User.nickname,
-        title: post.title,
-        content: post.content,
-        createdAt: post.createdAt,
-        likesCount: post.likesCount,
-      };
-    });
-
     if (allPost && !allPost[0]) {
       return {
         status: 200,
         message: "게시물이 없습니다. 첫 작성자가 되어 주세요.",
-        list: null,
+        allPost: null,
       };
     } else if (allPost) {
-      return { status: 200, message: "게시글 조회에 성공하였습니다.", list };
+      return { status: 200, message: "게시글 조회에 성공하였습니다.", allPost };
     } else {
       return {
         status: 400,
         message: "게시물 조회에 실패하였습니다.",
-        list: null,
+        allPost: null,
       };
     }
   };
@@ -99,9 +86,7 @@ class PostService {
     }
     const target = await Posts.findOne({ where: { postId, userId } });
     if (!target) {
-      return res.status(400).json({
-        message: "게시글 삭제에 실패하였습니다.",
-      });
+      return { status: 400, message: "게시글 삭제에 실패하였습니다." };
     }
     const editPost = await this.postRepository.deletePost(postId);
     if (editPost) {

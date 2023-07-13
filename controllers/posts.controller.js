@@ -4,8 +4,8 @@ class PostsController {
   postService = new PostService();
 
   viewpostslist = async (req, res) => {
-    const { status, message, list } = await this.postService.findAllPost();
-    return res.status(status).json({ message, list });
+    const { status, message, allPost } = await this.postService.findAllPost();
+    return res.status(status).json({ message, allPost });
   };
 
   viewonepost = async (req, res) => {
