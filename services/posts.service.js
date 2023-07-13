@@ -30,20 +30,7 @@ class PostService {
           message: "게시물 상세 조회에 실패하였습니다.",
         };
       } else if (postId) {
-        const onePost = await this.postRepository.findOnePost(postId);
-        let likesCount;
-        if (!onePost.likesCount) {
-          likesCount = 0;
-        } else {
-          likesCount = onePost.likesCount;
-        }
-        const post = {
-          nickname: onePost.User.nickname,
-          title: onePost.title,
-          content: onePost.content,
-          createdAt: onePost.createdAt,
-          likesCount: likesCount,
-        };
+        const post = await this.postRepository.findOnePost(postId);
         return {
           status: 200,
           post,
