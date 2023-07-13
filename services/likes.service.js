@@ -12,30 +12,19 @@ class LikeService {
     }
   };
   likeslist = async (userId) => {
-    const likeslist = await this.likeRepository.likeslist(userId);
-    likeslist.sort((a, b) => {
-      return b.likesCount - a.likesCount;
-    });
-    const list = likeslist.map((post) => {
-      return {
-        postId: post.postId,
-        nickname: post.nickname,
-        title: post.title,
-        createdAt: post.createdAt,
-        likesCount: post.likesCount,
-      };
-    });
-    if (likeslist) {
+    const allPosts = await this.likeRepository.likeslist(userId);
+
+    if (allPosts) {
       return {
         status: 200,
         message: "좋아요 게시글 조회에 성공하였습니다.",
-        list,
+        allPosts,
       };
     } else {
       return {
         status: 400,
         message: "좋아요 게시글 조회에 실패하였습니다.",
-        list: null,
+        allPost: null,
       };
     }
   };

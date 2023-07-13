@@ -46,6 +46,7 @@ class UserService {
         expiresIn: "7d",
       });
 
+      const token = `Bearer ${refreshToken}`;
       await this.userRepository.signupUser(
         nickname,
         hashedPassword,
@@ -56,7 +57,7 @@ class UserService {
         status: 201,
         cookie: {
           name: "refreshToken",
-          token: `Bearer ${refreshToken}`,
+          token,
           expiresIn: "7d",
         },
         message: "회원 가입에 성공하였습니다.",
@@ -99,9 +100,11 @@ class UserService {
         message: "닉네임 또는 패스워드를 확인해주세요.",
       };
     } else {
-      const [authType, authToken] = (existRefreshToken ?? "").split(" ");
       const userId = target.userId;
-      if (target.token == authToken && JWT.verify(authToken, rsecretkey)) {
+      if (
+        target.token == existRefreshToken &&
+        JWT.verify(existRefreshToken, rsecretkey)
+      ) {
         const accessToken = JWT.sign({ userId }, secretkey, {
           expiresIn: 3600,
         });
@@ -115,14 +118,14 @@ class UserService {
           refreshcookie: {
             name: "refreshToken",
             token: `Bearer ${existRefreshToken}`,
-            expiresIn: "7d",
+            expiresIn: "7days",
           },
           message: "로그인에 성공하였습니다.",
         };
       } else if (
-        (target.token == authToken && !JWT.verify(authToken, rsecretkey)) ||
-        !existRefreshToken ||
-        (target.token !== authToken && JWT.verify(authToken, rsecretkey))
+        (target.token == existRefreshToken &&
+          !JWT.verify(existRefreshToken, rsecretkey)) ||
+        target.token !== existRefreshToken
       ) {
         const refreshToken = JWT.sign({}, rsecretkey, {
           expiresIn: "7d",

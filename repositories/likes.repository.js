@@ -1,50 +1,35 @@
 const { Likes, Posts, Users } = require("../models");
-const { Op } = require("sequelize");
+const { sequelize } = require("../models");
+const { QueryTypes } = require("sequelize");
 
 class LikeRepository {
   liker = async (postId, userId) => {
     const target = await Likes.findOne({
-      where: { [Op.and]: [{ postId }, { userId }] },
+      where: { postId, userId },
     });
     if (!target) {
       const like = await Likes.create({ postId, userId });
       return like;
     } else {
       const like = await Likes.destroy({
-        where: { [Op.and]: [{ postId }, { userId }] },
+        where: { postId, userId },
       });
       return like;
     }
   };
 
   likeslist = async (userId) => {
-    const target = await Likes.findAll({ where: { userId } });
-    const postIds = target.map((like) => {
-      return like.postId;
-    });
-    const allpost = await Posts.findAll({
-      include: [
-        {
-          model: Users,
-          attributes: ["nickname"],
-        },
-      ],
-    });
-    const result = await Promise.all(
-      allpost.map(async (post) => {
-        const likesCount = await Likes.count({
-          where: { postId: post.postId },
-        });
-        post.likesCount = likesCount;
-        if (postIds.includes(post.postId)) {
-          return post;
-        } else {
-          return null;
-        }
-      })
+    const allPosts = await sequelize.query(
+      `SELECT u.nickname, p.title, p.content, p.createdAt, COUNT(l.postId) AS likesCount
+        FROM Posts AS p
+          LEFT JOIN Users as u on p.userId = u.userId 
+          LEFT JOIN Likes as l on p.postId = l.postId
+              WHERE u.userId = ${userId}
+              GROUP BY p.postId
+              ORDER BY likesCount DESC`,
+      { type: QueryTypes.SELECT }
     );
-    const answer = result.filter((item) => item !== null);
-    return answer;
+    return allPosts;
   };
 }
 module.exports = LikeRepository;

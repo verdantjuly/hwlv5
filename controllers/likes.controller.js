@@ -10,8 +10,10 @@ class LikesController {
   };
   likeslist = async (req, res) => {
     const { userId } = res.locals;
-    const { status, message, list } = await this.likeService.likeslist(userId);
-    return res.status(status).json({ message, list });
+    const { status, message, allPosts } = await this.likeService.likeslist(
+      userId
+    );
+    return res.status(status).json({ message, allPosts });
   };
 }
 

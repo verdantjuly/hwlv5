@@ -7,8 +7,8 @@ class PostRepository {
     const allPosts = await sequelize.query(
       `SELECT u.nickname, p.title, p.content, p.createdAt, COUNT(l.postId) AS likesCount
         FROM Posts AS p
-        LEFT JOIN Users as u on p.userId = u.userId 
-        LEFT JOIN Likes as l on p.postId = l.postId
+          LEFT JOIN Users as u on p.userId = u.userId 
+          LEFT JOIN Likes as l on p.postId = l.postId
               GROUP BY p.postId
               ORDER BY p.createdAt DESC`,
       { type: QueryTypes.SELECT }
