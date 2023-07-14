@@ -21,8 +21,8 @@ class PostRepository {
         FROM Posts AS p
           LEFT JOIN Users as u on p.userId = u.userId 
           LEFT JOIN Likes as l on p.postId = l.postId
-              WHERE p.postId = ${postId}`,
-      { type: QueryTypes.SELECT }
+              WHERE p.postId = :post_Id`,
+      { replacements: { post_Id: postId }, type: QueryTypes.SELECT }
     );
     return post;
   };

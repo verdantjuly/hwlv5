@@ -24,10 +24,10 @@ class LikeRepository {
         FROM Posts AS p
           LEFT JOIN Users as u on p.userId = u.userId 
           LEFT JOIN Likes as l on p.postId = l.postId
-              WHERE u.userId = ${userId}
+              WHERE l.userId = :user_Id
               GROUP BY p.postId
               ORDER BY likesCount DESC`,
-      { type: QueryTypes.SELECT }
+      { replacements: { user_Id: userId }, type: QueryTypes.SELECT }
     );
     return allPosts;
   };
