@@ -1,4 +1,4 @@
-const UserService = require("../services/users.service");
+const UserService = require('../services/users.service');
 
 class UsersController {
   userService = new UserService();
@@ -8,7 +8,7 @@ class UsersController {
     const { status, cookie, message } = await this.userService.signupUser(
       nickname,
       password,
-      confirm
+      confirm,
     );
 
     if (cookie) {
@@ -20,6 +20,7 @@ class UsersController {
   loginUser = async (req, res) => {
     const { nickname, password } = req.body;
     const existRefreshToken = req.cookies.refreshToken;
+    console.log(existRefreshToken);
     const { status, accesscookie, refreshcookie, message } =
       await this.userService.loginUser(nickname, password, existRefreshToken);
     if (accesscookie && refreshcookie) {

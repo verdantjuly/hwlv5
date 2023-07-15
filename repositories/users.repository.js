@@ -1,4 +1,4 @@
-const { Users } = require("../models");
+const { Users } = require('../models');
 
 class UserRepository {
   signupUser = async (nickname, password, refreshToken) => {
@@ -9,12 +9,17 @@ class UserRepository {
     });
     return signupUserData;
   };
-  loginUser = async (nickname, refreshToken) => {
-    const loginUserData = await Users.update(
+
+  loginUser = async nickname => {
+    const founduserdata = await Users.findOne({ where: { nickname } });
+    return founduserdata;
+  };
+  updateToken = async (nickname, refreshToken) => {
+    const updated = await Users.update(
       { token: refreshToken },
-      { where: { nickname } }
+      { where: { nickname } },
     );
-    return loginUserData;
+    return updated;
   };
 }
 

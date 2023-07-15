@@ -1,4 +1,4 @@
-const CommentService = require("../services/comments.service");
+const CommentService = require('../services/comments.service');
 
 class CommentsController {
   commentService = new CommentService();
@@ -15,9 +15,9 @@ class CommentsController {
     const { status, message } = await this.commentService.writecomment(
       postId,
       userId,
-      content
+      content,
     );
-    res.status(status).json(message);
+    res.status(status).json({ message });
   };
   editcomment = async (req, res) => {
     const { commentId } = req.params;
@@ -26,7 +26,7 @@ class CommentsController {
     const { status, message } = await this.commentService.updatecomment(
       commentId,
       userId,
-      content
+      content,
     );
     res.status(status).json({ message });
   };
@@ -35,7 +35,7 @@ class CommentsController {
     const { userId } = res.locals;
     const { status, message } = await this.commentService.removecomment(
       commentId,
-      userId
+      userId,
     );
     res.status(status).json({ message });
   };

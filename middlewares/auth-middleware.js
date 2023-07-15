@@ -1,13 +1,14 @@
-const JWT = require("jsonwebtoken");
-const secretkey = "";
+const JWT = require('jsonwebtoken');
+const secretkey = 'ACCESS_TOKEN';
+require('../config/env');
 
 module.exports = async (req, res, next) => {
   const { accessToken } = req.cookies;
-  const [authType, authToken] = (accessToken ?? "").split(" ");
+  const [authType, authToken] = (accessToken ?? '').split(' ');
   try {
-    if (!authToken || authType !== "Bearer") {
+    if (!authToken || authType !== 'Bearer') {
       return res.status(400).json({
-        errorMessage: "로그인 후 이용 가능한 기능입니다.",
+        message: '로그인 후 이용 가능한 기능입니다.',
       });
     }
 
@@ -15,7 +16,7 @@ module.exports = async (req, res, next) => {
 
     if (!verified) {
       return res.status(400).json({
-        errorMessage: "로그인 후 이용 가능한 기능입니다.",
+        message: '로그인 후 이용 가능한 기능입니다.',
       });
     } else {
       res.locals.userId = verified.userId;
@@ -23,7 +24,7 @@ module.exports = async (req, res, next) => {
     }
   } catch (err) {
     return res.status(400).json({
-      errorMessage: "로그인 후에 이용하세요.",
+      message: '로그인 후에 이용하세요.',
     });
   }
 };

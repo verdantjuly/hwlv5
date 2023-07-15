@@ -1,6 +1,6 @@
-const { Likes, Posts, Users } = require("../models");
-const { sequelize } = require("../models");
-const { QueryTypes } = require("sequelize");
+const { Likes, Posts, Users } = require('../models');
+const { sequelize } = require('../models');
+const { QueryTypes } = require('sequelize');
 
 class LikeRepository {
   liker = async (postId, userId) => {
@@ -18,16 +18,16 @@ class LikeRepository {
     }
   };
 
-  likeslist = async (userId) => {
+  likeslist = async userId => {
     const allPosts = await sequelize.query(
       `SELECT u.nickname, p.title, p.content, p.createdAt, COUNT(l.postId) AS likesCount
         FROM Posts AS p
           LEFT JOIN Users as u on p.userId = u.userId 
           LEFT JOIN Likes as l on p.postId = l.postId
-              WHERE l.userId = :user_Id
+              WHERE l.userId = :user_Id AND u.delete = 0 AND p.delete = 0
               GROUP BY p.postId
               ORDER BY likesCount DESC`,
-      { replacements: { user_Id: userId }, type: QueryTypes.SELECT }
+      { replacements: { user_Id: userId }, type: QueryTypes.SELECT },
     );
     return allPosts;
   };
