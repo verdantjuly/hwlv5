@@ -81,7 +81,7 @@ class UserService {
 
   loginUser = async (nickname, password, existRefreshToken) => {
     const founduserdata = await this.userRepository.loginUser(nickname);
-    if (!founduserdata) {
+    if (!founduserdata || !password || !nickname) {
       return {
         status: 400,
         accesscookie: null,
@@ -146,9 +146,6 @@ class UserService {
 
     const status = new Returns();
     try {
-      if (!nickname || !password) {
-        return status.status400();
-      }
       const match = await bcrypt.compare(password, founduserdata.password);
       if (!match) {
         return status.status400();
