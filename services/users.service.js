@@ -81,6 +81,14 @@ class UserService {
 
   loginUser = async (nickname, password, existRefreshToken) => {
     const founduserdata = await this.userRepository.loginUser(nickname);
+    if (!founduserdata) {
+      return {
+        status: 400,
+        accesscookie: null,
+        refreshcookie: null,
+        message: '로그인에 실패하였습니다.',
+      };
+    }
     const userId = founduserdata.userId;
     const [authType, authToken] = (existRefreshToken ?? '').split(' ');
     const accessToken = JWT.sign({ userId }, secretkey, {
