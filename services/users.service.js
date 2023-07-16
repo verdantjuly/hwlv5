@@ -150,7 +150,7 @@ class UserService {
         return status.status400();
       }
       const match = await bcrypt.compare(password, founduserdata.password);
-      if (!founduserdata.nickname || !match) {
+      if (!match) {
         return status.status400();
       } else if (existRefreshToken) {
         const verified = JWT.verify(authToken, rsecretkey);
