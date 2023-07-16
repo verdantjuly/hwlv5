@@ -146,22 +146,13 @@ class UserService {
         return status.status400();
       } else if (existRefreshToken) {
         const verified = JWT.verify(authToken, rsecretkey);
-        if (authType !== 'Bearer' || !authToken) {
-          return status.status400();
-        } else if (
-          (founduserdata.token == authToken && !verified) ||
-          (founduserdata.token !== authToken && verified)
-        ) {
-          await this.userRepository.updateToken(nickname, refreshToken);
-          return status.status201();
-        } else if (founduserdata.token !== authToken && !verified) {
-          res.clearCookie('refreshToken');
-          res.clearCookie('accessToken');
-          console.log(`비정상적인 접근 userId:${userId}`);
-          return status.status400();
-        }
         if (founduserdata.token == authToken && verified) {
           return status.status200();
+        } else if (founduserdata.token !== authToken || !verified) {
+          await this.userRepository.updateToken(nickname, refreshToken);
+          return status.status201();
+        } else if (authType !== 'Bearer' || !authToken) {
+          return status.status400();
         }
       } else if (!existRefreshToken) {
         await this.userRepository.updateToken(nickname, refreshToken);
